@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "126339024003",
+    "project_id": "budgetease2",
+    "storage_bucket": "budgetease2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126339024003:android:898a0e7f4a3ef353c2c7b6",
+        "android_client_info": {
+          "package_name": "com.budgetease.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA383jn2WKO9PjcqyBnOZ4u7xZp7m4XXRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
