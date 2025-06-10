@@ -5,6 +5,9 @@ import '../models/transaction_model.dart';
 import '../services/transaction_service.dart';
 import '../utils/constants.dart';
 
+// Ce fichier est maintenant obsolète car l'historique des transactions est affiché dans HomeScreen.
+// Vous pouvez supprimer ce fichier en toute sécurité.
+
 class TransactionsListScreen extends StatelessWidget {
   const TransactionsListScreen({super.key});
 
@@ -106,4 +109,4 @@ class TransactionsListScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}

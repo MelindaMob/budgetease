@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import '../services/transaction_service.dart';
 import '../utils/constants.dart';
 import 'add_transaction_screen.dart';
-import 'transactions_list_screen.dart';
 import 'statistics_screen.dart';
 import 'profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../models/transaction_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -113,17 +113,7 @@ class HomeScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildNavigationButton(
-                  context,
-                  'Transactions',
-                  Icons.list_alt,
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TransactionsListScreen(),
-                    ),
-                  ),
-                ),
+                
                 _buildNavigationButton(
                   context,
                   'Statistiques',
@@ -136,6 +126,77 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            // Historique des transactions
+            const SizedBox(height: 32),
+            Expanded(
+              child: StreamBuilder<List<TransactionModel>>(
+                stream: transactionService.getTransactions(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Erreur: ${snapshot.error}'),
+                    );
+                  }
+
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  final transactions = snapshot.data!;
+
+                  if (transactions.isEmpty) {
+                    return const Center(
+                      child: Text('Aucune transaction'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: transactions.length,
+                    itemBuilder: (context, index) {
+                      final transaction = transactions[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: transaction.type == 'revenu'
+                                ? AppColors.income
+                                : AppColors.expense,
+                            child: Icon(
+                              transaction.type == 'revenu'
+                                  ? Icons.arrow_upward
+                                  : Icons.arrow_downward,
+                              color: Colors.white,
+                            ),
+                          ),
+                          title: Text(
+                            transaction.title,
+                            style: AppTextStyles.bodyLarge,
+                          ),
+                          subtitle: Text(
+                            '${transaction.category} • ${transaction.date}',
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                          trailing: Text(
+                            formatAmount(transaction.amount),
+                            style: AppTextStyles.bodyLarge.copyWith(
+                              color: transaction.type == 'revenu'
+                                  ? AppColors.income
+                                  : AppColors.expense,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -202,4 +263,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}

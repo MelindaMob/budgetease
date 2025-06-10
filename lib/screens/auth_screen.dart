@@ -39,11 +39,25 @@ class _AuthScreenState extends State<AuthScreen> {
     final auth = Provider.of<AuthService>(context, listen: false);
     try {
       if (_isLogin) {
-        await auth.signIn(_emailController.text.trim(), _passwordController.text.trim());
+        final user = await auth.signIn(_emailController.text.trim(), _passwordController.text.trim());
+        if (user != null) {
+          final profileService = Provider.of<UserProfileService>(context, listen: false);
+          final profileData = await auth.getUserProfile(user.uid);
+          if (profileData != null) {
+            profileService.updateProfile(
+              user.uid,
+              UserProfileModel(
+                id: profileData['id'],
+                firstName: profileData['firstName'],
+                lastName: profileData['lastName'],
+                email: profileData['email'],
+              ),
+            );
+          }
+        }
       } else {
         final user = await auth.signUp(_emailController.text.trim(), _passwordController.text.trim());
         if (user != null) {
-          // Créer le profil utilisateur dans Firestore
           final profileService = Provider.of<UserProfileService>(context, listen: false);
           await profileService.updateProfile(
             user.uid,
@@ -151,4 +165,4 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
     );
   }
-} 
+}

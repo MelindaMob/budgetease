@@ -91,4 +91,18 @@ class TransactionService {
       return categoryTotals;
     });
   }
-} 
+
+  // Obtenir les revenus par catégorie
+  Stream<Map<String, double>> getIncomeByCategory() {
+    return getTransactions().map((transactions) {
+      Map<String, double> categoryTotals = {};
+      for (var transaction in transactions) {
+        if (transaction.type == 'revenu') {
+          categoryTotals[transaction.category] =
+              (categoryTotals[transaction.category] ?? 0) + transaction.amount;
+        }
+      }
+      return categoryTotals;
+    });
+  }
+}
